@@ -22,9 +22,6 @@ type jwtCustomClaims struct {
 	jwt.StandardClaims
 }
 
-var minioURL = os.Getenv("MINIO_URL")
-var bucketName = os.Getenv("MINIO_BUCKET")
-
 func upload(c echo.Context) error {
 	ctx := context.Background()
 
@@ -65,7 +62,7 @@ func upload(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	minioClient.FPutObject(ctx, bucketName, file.Filename, "./"+file.Filename, minio.PutObjectOptions{})
+	minioClient.FPutObject(ctx, os.Getenv("MINIO_BUCKET"), file.Filename, "./"+file.Filename, minio.PutObjectOptions{})
 	if err != nil {
 		fmt.Println("Minio: ", err)
 		return c.String(http.StatusInternalServerError, err.Error())
@@ -73,7 +70,7 @@ func upload(c echo.Context) error {
 
 	os.Remove("./" + file.Filename)
 
-	db.Create(&Item{Title: title, Description: description, Price: price, Picture: "http://" + minioURL + "/" + bucketName + "/" + file.Filename})
+	db.Create(&Item{Title: title, Description: description, Price: price, Picture: "http://" + os.Getenv("MINIO_URL") + "/" + os.Getenv("MINIO_BUCKET") + "/" + file.Filename})
 
 	return c.String(http.StatusOK, "Item Uploaded Successfully")
 

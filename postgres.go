@@ -28,15 +28,13 @@ var postgresLock = &sync.Mutex{}
 
 var postgresInstance *PostgresHandler
 
-var postgresConnection = os.Getenv("POSTGRES_CONNECTION")
-
 func getPostgres() *PostgresHandler {
 	if postgresInstance == nil {
 		postgresLock.Lock()
 		defer postgresLock.Unlock()
 		if postgresInstance == nil {
 			fmt.Println("Creating connection to PostgreSQL.")
-			db, err := gorm.Open(postgres.Open(postgresConnection), &gorm.Config{})
+			db, err := gorm.Open(postgres.Open(os.Getenv("POSTGRES_CONNECTION")), &gorm.Config{})
 			if err != nil {
 				log.Fatalln(err)
 			}
