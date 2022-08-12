@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/minio/minio-go/v7"
@@ -20,10 +22,8 @@ type jwtCustomClaims struct {
 	jwt.StandardClaims
 }
 
-const minioURL = "localhost:9000"
-const minioUser = "ROOTUSERNAME"
-const minioPass = "MEMEPASSWORD"
-const bucketName = "react-shop"
+var minioURL = os.Getenv("MINIO_URL")
+var bucketName = os.Getenv("MINIO_BUCKET")
 
 func upload(c echo.Context) error {
 	ctx := context.Background()
@@ -33,6 +33,12 @@ func upload(c echo.Context) error {
 
 	// PostgreSQL Connection
 	db := getPostgres().postgresInstance
+
+	// Load .env
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	title := c.FormValue("title")
 	description := c.FormValue("description")
@@ -111,5 +117,5 @@ func main() {
 	r.POST("", upload)
 
 	// Server Start
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(os.Getenv("SERVER_PORT")))
 }

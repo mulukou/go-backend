@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"sync"
 
 	"github.com/google/uuid"
@@ -27,13 +28,15 @@ var postgresLock = &sync.Mutex{}
 
 var postgresInstance *PostgresHandler
 
+var postgresConnection = os.Getenv("POSTGRES_CONNECTION")
+
 func getPostgres() *PostgresHandler {
 	if postgresInstance == nil {
 		postgresLock.Lock()
 		defer postgresLock.Unlock()
 		if postgresInstance == nil {
 			fmt.Println("Creating connection to PostgreSQL.")
-			db, err := gorm.Open(postgres.Open("host=localhost user=postgres password=extramemepassword dbname=postgres port=5432 sslmode=disable"), &gorm.Config{})
+			db, err := gorm.Open(postgres.Open(postgresConnection), &gorm.Config{})
 			if err != nil {
 				log.Fatalln(err)
 			}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"sync"
 
 	"github.com/minio/minio-go/v7"
@@ -17,6 +18,9 @@ type MinioHandler struct {
 var minioLock = &sync.Mutex{}
 
 var minioInstance *MinioHandler
+
+var minioUser = os.Getenv("MINIO_USER")
+var minioPass = os.Getenv("MINIO_PASSWORD")
 
 func getMinio() *MinioHandler {
 	if minioInstance == nil {
