@@ -34,12 +34,6 @@ func upload(c echo.Context) error {
 	// PostgreSQL Connection
 	db := getPostgres().postgresInstance
 
-	// Load .env
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	title := c.FormValue("title")
 	description := c.FormValue("description")
 
@@ -86,6 +80,12 @@ func upload(c echo.Context) error {
 }
 
 func main() {
+	// Load .env
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	e := echo.New()
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
