@@ -23,14 +23,14 @@ type PostgresHandler struct {
 	postgresInstance *gorm.DB
 }
 
-var postgreLock = &sync.Mutex{}
+var postgresLock = &sync.Mutex{}
 
 var postgresInstance *PostgresHandler
 
-func getPostgre() *PostgresHandler {
+func getPostgres() *PostgresHandler {
 	if postgresInstance == nil {
-		postgreLock.Lock()
-		defer postgreLock.Unlock()
+		postgresLock.Lock()
+		defer postgresLock.Unlock()
 		if postgresInstance == nil {
 			fmt.Println("Creating connection to PostgreSQL.")
 			db, err := gorm.Open(postgres.Open("host=localhost user=postgres password=extramemepassword dbname=postgres port=5432 sslmode=disable"), &gorm.Config{})

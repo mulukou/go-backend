@@ -32,7 +32,7 @@ func upload(c echo.Context) error {
 	minioClient := getMinio().minioInstance
 
 	// PostgreSQL Connection
-	db := getPostgre().postgresInstance
+	db := getPostgres().postgresInstance
 
 	title := c.FormValue("title")
 	description := c.FormValue("description")
@@ -98,7 +98,7 @@ func main() {
 	// Routes
 	e.GET("/items", func(c echo.Context) error {
 		var items []Item
-		db := getPostgre().postgresInstance
+		db := getPostgres().postgresInstance
 		db.Find(&items)
 		a, err := json.Marshal(items)
 		if err != nil {
